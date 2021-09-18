@@ -1,6 +1,56 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const Contact = () => {
+    const [userData, setUserData] = useState({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        email: "",
+        address: "",
+        message: "",
+    });
+    let name, value;
+    const postUserData = (event) => {
+        name = event.target.name;
+        value = event.target.value;
+        setUserData({ ...userData, [name]: value })
+    };
+    //firebase connection
+    const submitData = async (event) => {
+        event.preventDefault();
+        const { firstName, lastName, phone, email, address, message } = userData;
+        if (firstName && lastName && phone && email && address && message) {
+            const res = fetch('https://reactfirebase-54332-default-rtdb.firebaseio.com/userDataRecords.json', {
+                method: "POST",
+                Headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    phone,
+                    email,
+                    address,
+                    message,
+                }),
+            });
+            if (res) {
+                setUserData({
+                    firstName: "",
+                    lastName: "",
+                    phone: "",
+                    email: "",
+                    address: "",
+                    message: "",
+                });
+                alert("Data Stored");
+            } else {
+                alert("Please Fill the Data")
+            }
+        } else {
+            alert("Please Fill the Data")
+        }
+    };
     return (
         <>
             <section className="contactus-section">
@@ -27,35 +77,43 @@ const Contact = () => {
                                                     id=""
                                                     className="form-control"
                                                     placeholder="First Name"
+                                                    value={userData.firstName}
+                                                    onChange={postUserData}
                                                 />
                                             </div>
                                             <div className="col-12 col-lg-6 contact-input-feild">
                                                 <input
                                                     type="text"
-                                                    name="lastNAME"
+                                                    name="lastName"
                                                     id=""
                                                     className="form-control"
                                                     placeholder="Last Name"
+                                                    value={userData.lastName}
+                                                    onChange={postUserData}
                                                 />
                                             </div>
                                         </div>
                                         <div className="row">
                                             <div className="col-12 col-lg-6 contact-input-feild">
                                                 <input
-                                                    type="text"
+                                                    type="phone"
                                                     name="phone"
                                                     id=""
                                                     className="form-control"
                                                     placeholder="Phone Number"
+                                                    value={userData.phone}
+                                                    onChange={postUserData}
                                                 />
                                             </div>
                                             <div className="col-12 col-lg-6 contact-input-feild">
                                                 <input
-                                                    type="text"
+                                                    type="email"
                                                     name="email"
                                                     id=""
                                                     className="form-control"
                                                     placeholder="Email ID"
+                                                    value={userData.email}
+                                                    onChange={postUserData}
                                                 />
                                             </div>
                                         </div>
@@ -67,6 +125,8 @@ const Contact = () => {
                                                     id=""
                                                     className="form-control"
                                                     placeholder="Add Address"
+                                                    value={userData.address}
+                                                    onChange={postUserData}
                                                 />
                                             </div>
 
@@ -79,6 +139,8 @@ const Contact = () => {
                                                     id=""
                                                     className="form-control"
                                                     placeholder="Enter Your Message"
+                                                    value={userData.message}
+                                                    onChange={postUserData}
                                                 />
                                             </div>
                                         </div>
@@ -99,7 +161,7 @@ const Contact = () => {
                                         <button
                                             type="submit"
                                             className="btn btn-style w-100"
-                                            onClick="">
+                                            onClick={submitData}>
                                             Submit
                                         </button>
                                     </form>
